@@ -1,7 +1,4 @@
 # Created by: Tyler McCamant (tmccamant@gmail.com)
-#
-#
-# This will configure SSL/TLS to align with security best practices
 
 # Re-create the protocols key.
 New-Item 'HKLM:SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols' -Force | Out-Null
@@ -87,16 +84,6 @@ New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders
 $key.Close()
 }
 
-# Disable Hashes (reserved for future use)
-#$weakHashes = @(
-#	''
-#)
-#Foreach ($hash in $weakHashes) {
-#$key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes", $true).CreateSubKey($hash)
-#New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\$hash" -name 'Enabled' -value '0' -PropertyType 'DWord' -Force | Out-Null
-#$key.Close()
-#}
-
 # Recreate the KeyExchangeAlgorithms key
 New-Item 'HKLM:SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms' -Force | Out-Null
 
@@ -111,13 +98,3 @@ $key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityPr
 New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\$keyExchange" -name 'Enabled' -value '0xffffffff' -PropertyType 'DWord' -Force | Out-Null
 $key.Close()
 }
-
-# Disable KeyExchangeAlgorithms (reserved for future use)
-#$weakKeyExchanges = @(
-#	''
-#)
-#Foreach ($keyExchange in $weakKeyExchanges) {
-#$key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms", $true).CreateSubKey($keyExchange)
-#New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\$keyExchange" -name 'Enabled' -value '0xffffffff' -PropertyType 'DWord' -Force | Out-Null
-#$key.Close()
-#}
