@@ -72,8 +72,6 @@ New-Item 'HKLM:SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashe
 
 # Enable Hashes
 $strongHashes = @(
-	'MD5',
-	'SHA',
 	'SHA 256',
 	'SHA 384',
 	'SHA 512'
@@ -83,6 +81,16 @@ $key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityPr
 New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\$hash" -name 'Enabled' -value '0xffffffff' -PropertyType 'DWord' -Force | Out-Null
 $key.Close()
 }
+
+# Disable weak hashes
+$weakHashes = @(
+	'MD5',
+	'SHA'
+)
+Foreach ($hash in $weakHashes) {
+$key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes", $true).CreateSubKey($hash)
+New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\$hash" -name 'Enabled' -value '0' -PropertyType 'DWord' -Force | Out-Null
+$key.Close()
 
 # Recreate the KeyExchangeAlgorithms key
 New-Item 'HKLM:SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms' -Force | Out-Null
