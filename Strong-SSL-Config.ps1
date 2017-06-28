@@ -8,7 +8,8 @@ $weakProtocols = @(
 	'Multi-Protocol Unified Hello',
 	'PCT 1.0',
 	'SSL 2.0',
-	'SSL 3.0'
+	'SSL 3.0',
+	'TLS 1.0'
 )
 Foreach ($protocol in $weakProtocols) {
 New-Item HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\$protocol\Server -Force | Out-Null
@@ -21,7 +22,6 @@ New-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\
 
 # Enable strong protocols
 $strongProtocols = @(
-	'TLS 1.0',
 	'TLS 1.1',
 	'TLS 1.2'
 )
@@ -91,6 +91,7 @@ Foreach ($hash in $weakHashes) {
 $key = (get-item HKLM:\).OpenSubKey("SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes", $true).CreateSubKey($hash)
 New-ItemProperty -path "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\$hash" -name 'Enabled' -value '0' -PropertyType 'DWord' -Force | Out-Null
 $key.Close()
+}
 
 # Recreate the KeyExchangeAlgorithms key
 New-Item 'HKLM:SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms' -Force | Out-Null
